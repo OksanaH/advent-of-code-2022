@@ -9,36 +9,35 @@ object Task4 extends App{
   val inputLines = Source.fromInputStream(fileStream).getLines.toList
 
   Task4_1()
+  Task4_2()
 
   def Task4_1(): Unit ={
+    println(inputLines.count(rangeFullyContainsAnotherRange))
+  }
 
-    var total  =0
-    inputLines.map {
-      line => {
-        val regex: Regex = new Regex("\\d{1,}")
-        val numbers = (regex findAllIn line).toSeq.map(_.toInt).toArray
+  def Task4_2(): Unit ={
+    println(inputLines.count(rangesOverlap))
+  }
 
-        numbers.length match {
-          case length if length == 4 => {
-            if (rangesOverlap(numbers)) total += 1
-          }
-          case _ => throw new Exception(s"Bad input on line ${inputLines.indexOf(line) +1}")
-        }
+  def rangesOverlap(line: String):Boolean ={
+    val (range1, range2) = createRanges(line)
+    range1.filter((item=>range2.contains(item))).toSeq.length>=1
+  }
+
+  def rangeFullyContainsAnotherRange(line: String):Boolean ={
+    val (range1, range2) = createRanges(line)
+    range1.subsetOf(range2) || range2.subsetOf(range1)
+  }
+
+
+  def createRanges(line: String): (Set[Int], Set[Int]) ={
+    val numbers = (new Regex("\\d{1,}") findAllIn line).toSeq.map(_.toInt)
+    numbers.length match {
+      case length if length == 4 => {
+        val (start1,end1, start2, end2) = (numbers(0),numbers(1),numbers(2),numbers(3))
+        ((start1 to end1).toSet, (start2 to end2).toSet)
       }
+      case _ => throw new Exception(s"Bad input on line ${inputLines.indexOf(line) +1}")
     }
-    print(total)
   }
-
-  def rangesOverlap(numbers: Array[Int]): Boolean ={
-    val (start1,end1, start2, end2) = (numbers(0),numbers(1),numbers(2),numbers(3))
-
-    var (sections1, sections2) = (Set[Int](),Set[Int]())
-    for (i<-start1 to end1)
-      sections1 += i
-    for (i<-start2 to end2)
-      sections2 += i
-
-    sections1.subsetOf(sections2) || sections2.subsetOf(sections1)
-  }
-
 }

@@ -6,7 +6,7 @@ object Task3 extends App{
 
   val alphabet ="abcdefghijklmnopqrstuvwxyz" ++ "abcdefghijklmnopqrstuvwxyz".toUpperCase()
 
-  val fileStream = getClass.getResourceAsStream("/Day3_input.txt")
+  val fileStream = getClass.getResourceAsStream("/resources/Day3_input.txt")
   val inputLines = Source.fromInputStream(fileStream).getLines.toList
 
   Task3_1()

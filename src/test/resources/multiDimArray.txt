@@ -1,0 +1,9 @@
+            [M]
+[G]         [O]
+[A] [S]     [P]
+[Z] [G] [W] [E]
+ 1   2   3   4
+
+move 1 from 5 to 2
+move 7 from 7 to 1
+move 1 from 1 to 7

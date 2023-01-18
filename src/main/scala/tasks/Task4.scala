@@ -5,7 +5,7 @@ import scala.util.matching.Regex
 
 object Task4 extends App{
 
-  val fileStream = getClass.getResourceAsStream("/Day4_input.txt")
+  val fileStream = getClass.getResourceAsStream("/resources/Day4_input.txt")
   val inputLines = Source.fromInputStream(fileStream).getLines.toList
 
   Task4_1()

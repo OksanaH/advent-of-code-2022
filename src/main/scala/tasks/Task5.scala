@@ -9,20 +9,45 @@ import scala.util.matching.Regex
 object Task5 extends App{
 
   var stacks = Stack[Stack[String]]()
+  var inputLines = List[String]()
 
-  Task5_1("/resources/Day5_input.txt")
-  println(stacks)
+  var filePath = "/resources/Day5_input.txt"
 
-  def Task5_1(path:String): Unit ={
-    val fileStream = getClass.getResourceAsStream(path)
-    val inputLines = Source.fromInputStream(fileStream).getLines.toList
-    val stackLines = inputLines.filter(l=>l.contains("["))
-    toStack(stackLines)
+  main()
+  def main(): Unit ={
+    //task 1
     inputLines.filter(line=>line.startsWith("move")).map(moveElement)
+    stacks.map{s=>
+      print(s.head)
+    }
+    stacks.clear()
+    createStacks()
+
+    //task2
+    inputLines.filter(line => line.startsWith("move")).map(moveByCrane)
+    stacks.map { s =>
+      print(s.head)
+    }
+  }
+
+  def createStacks(): Unit ={
+    val fileStream = getClass.getResourceAsStream("/resources/Day5_input.txt")
+    inputLines = Source.fromInputStream(fileStream).getLines.toList
+    toStack(inputLines.filter(l => l.contains("[")))
+  }
+
+  def moveByCrane(line: String): Unit = {
+    println(stacks)
+      val List(elementsToMove, moveFrom, moveTo) = (new Regex("\\d{1,}") findAllIn line).map(_.toInt).toList
+      val blockToMove = ArrayBuffer[String]()
+      (1 to elementsToMove) foreach (i => {
+        blockToMove +=  stacks(moveFrom - 1).pop
+      })
+      stacks(moveTo - 1).pushAll(blockToMove.reverse)
   }
 
   def moveElement(line: String): Unit ={
-    val List(elementsToMove, moveFrom, moveTo) = (new Regex("\\d{1,}") findAllIn(line)).map(_.toInt).toList
+    val List(elementsToMove, moveFrom, moveTo) = (new Regex("\\d{1,}") findAllIn line).map(_.toInt).toList
     (1 to elementsToMove) foreach (_ => {
       val elToMove = stacks(moveFrom - 1).pop
       stacks(moveTo - 1).push(elToMove)
@@ -37,7 +62,6 @@ object Task5 extends App{
         stacks.push(edited)
       }
     }
-    stacks = stacks.reverse.transpose.map{s =>s.filterNot(_.isBlank)
-    }
+    stacks = stacks.reverse.transpose.map{s =>s.filterNot(_.isBlank)}
   }
 }

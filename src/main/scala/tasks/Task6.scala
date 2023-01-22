@@ -1,41 +1,25 @@
 package tasks
 
-import tasks.Task4.getClass
-
-import scala.collection.mutable.{ArrayBuffer, Stack}
+import scala.annotation.tailrec
 import scala.io.Source
-import scala.util.control.Breaks
-import scala.util.control.Breaks.break
-import scala.util.matching.Regex
 
 object Task6 extends App{
+  val markerSize = 4
   val fileStream = getClass.getResourceAsStream("/resources/Day6_input.txt")
-  val inputLines = Source.fromInputStream(fileStream)
+  var inputLines = Source.fromInputStream(fileStream).toSeq
 
   main()
 
   def main(): Unit ={
-    var totalCharacters = getStartOfPacket(inputLines.toSeq)
+    var totalCharacters = getStartOfPacket(0)
     println(totalCharacters)
   }
 
-  def getStartOfPacket(input:Seq[Char]): Int ={
-    var totalBeforeStartOfPacket = 1
-    var loop = new Breaks
-    loop.breakable{
-      (0 to input.length).foreach {
-        start => {
-          if (input.drop(start).take(4).distinct.length < 4) {
-            totalBeforeStartOfPacket += 1
-          }
-          else {
-            totalBeforeStartOfPacket += 3
-            loop.break
-          }
-        }
-      }
+  @tailrec
+  def getStartOfPacket(startingIdx: Int): Int = {
+    inputLines.drop(startingIdx).take(markerSize).distinct.length match {
+      case i if i < markerSize =>getStartOfPacket(startingIdx+1)
+      case _ => return startingIdx+markerSize
     }
-    totalBeforeStartOfPacket
   }
-
 }

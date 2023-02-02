@@ -12,42 +12,41 @@ object Task7 extends App{
 
   def main(): Unit ={
     processLog()
-
     println(sizes.filter(_._2<100000).map(_._2).sum)
-  }
-  def findFoldersOfSize(size: Long): Long = {
-    sizes.filter(_._2<100000).map(_._2).sum
   }
   def processLog(): Unit ={
     var currentPath = ""
     inputLines foreach(line =>{
       line match {
-        case line if line.contains("ls") => None
-        case line if line.contains("cd ..") => {
+        case line if line.contains("$ ls") || line.startsWith("dir ")=> None
+        case line if line.contains("$ cd ..") => {
+          if (currentPath!= "/home") {
             currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"))
-            println(s" going back into $currentPath, line = $line")
+          }
         }
-        case line if line.contains("$ cd /") => currentPath = "/home"
+        case line if line.contains("$ cd /")  => currentPath = "/home"
         case line if line.contains("$ cd") && (!line.contains("/") && !line.contains("..")) => {
-          println(s" current directory to cd into: $currentPath, line = $line")
-          //if (currentPath == "")
-           // currentPath = "/home"
-          currentPath = currentPath.concat("/").concat(line.split(" ").last)
-          sizes(currentPath)= 0
+          val dir = line.split(" ").last
+          currentPath = s"$currentPath/$dir"
+
+          println(s"Went into dir $dir, current dir is $currentPath")
+          sizes.put(currentPath, 0)
+          println(sizes)
         }
 
         case line if line.exists(_.isDigit) => {
           val size = line.split(" ").toList.head
           var temp = currentPath
           while (temp != "") {
+            println(s"Updating folder $temp; current directory is $currentPath")
             sizes(temp) += size.toInt
             temp = temp.substring(0, temp.lastIndexOf("/"))
           }
         }
-        case _ => None
+        case _ => {
+          println(s"no match $line")
+        }
       }
     })
-
-    println(sizes)
   }
 }

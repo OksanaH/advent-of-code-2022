@@ -8,15 +8,10 @@ class Day7Tests extends AnyFunSuite {
   Task7.sizes = scala.collection.mutable.Map("/home" -> 0)
 
   test("Ignore correctly") {
-    val input = List("$ cd /", "$ ls")
-    val fileStream = getClass.getResourceAsStream("/Day7_testData.txt")
     Task7.inputLines = List("$ cd /", "$ ls")
-
     Task7.processLog()
-
-    val expected = Task7.sizes
     assert(Task7.sizes.size == 1)
-    assert(Task7.sizes.equals(expected))
+    assert(Task7.sizes.equals(scala.collection.mutable.Map("/home" -> 0)))
 
   }
 
@@ -48,6 +43,34 @@ class Day7Tests extends AnyFunSuite {
     assert(Task7.sizes.size == 5)
     Task7.sizes foreach { case (folder, size) =>
       assert(expected.exists(e => e._1 == folder))
+    }
+  }
+
+  test("Go out of folder correctly") {
+    Task7.inputLines = List(
+      "$ cd /",
+      "$ ls",
+      "$ cd mcszw",
+      "$ cd prpmrtc",
+      "$ cd hblbht",
+      "$ ls",
+      "207362 bjlcfcfq.zmn",
+      "$ cd ..",
+      "$ cd ..",
+      "$ cd ..",
+      "$ cd ..",
+      "$ cd tgrplmn",
+      "$ ls",
+    )
+    Task7.processLog()
+
+    val expected = scala.collection.mutable.Map("/home" -> 0, "/home/mcszw" -> 0, "/home/mcszw/prpmrtc" -> 0, "/home/mcszw/prpmrtc/hblbht" -> 0, "/home/tgrplmn" -> 0)
+    //println(Task7.sizes)
+    Task7.sizes foreach { folder =>
+      assert(expected.exists(e => e._1 == folder))
+    }
+    expected foreach { folder =>
+      assert(Task7.sizes.exists(e => e._1 == folder))
     }
   }
 

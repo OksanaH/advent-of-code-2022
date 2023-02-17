@@ -5,18 +5,17 @@ import tasks.Task7
 import scala.io.Source
 
 class Day7Tests extends AnyFunSuite {
-  Task7.sizes = scala.collection.mutable.Map("/home" -> 0)
 
   test("Ignore correctly") {
+    Task7.sizes = scala.collection.mutable.Map("/home" -> 0)
     Task7.inputLines = List("$ cd /", "$ ls")
     Task7.processLog()
     assert(Task7.sizes.size == 1)
     assert(Task7.sizes.equals(scala.collection.mutable.Map("/home" -> 0)))
-
   }
 
   test("Go into folder correctly") {
-    val fileStream = getClass.getResourceAsStream("/Day7_testData.txt")
+    Task7.sizes = scala.collection.mutable.Map("/home" -> 0)
     Task7.inputLines = List(
       "$ cd /",
       "$ ls",
@@ -35,7 +34,8 @@ class Day7Tests extends AnyFunSuite {
       "$ cd ..",
       "$ cd ..",
       "$ cd ..",
-      "$ cd test"
+      "$ cd test",
+      "$ ls"
     )
     Task7.processLog()
 
@@ -47,6 +47,7 @@ class Day7Tests extends AnyFunSuite {
   }
 
   test("Go out of folder correctly") {
+    Task7.sizes = scala.collection.mutable.Map("/home" -> 0)
     Task7.inputLines = List(
       "$ cd /",
       "$ ls",
@@ -64,28 +65,41 @@ class Day7Tests extends AnyFunSuite {
     )
     Task7.processLog()
 
-    val expected = scala.collection.mutable.Map("/home" -> 0, "/home/mcszw" -> 0, "/home/mcszw/prpmrtc" -> 0, "/home/mcszw/prpmrtc/hblbht" -> 0, "/home/tgrplmn" -> 0)
-    //println(Task7.sizes)
+    val expected = scala.collection.mutable.Map("/home" -> 0, "/home/mcszw" -> 0, "/home/mcszw/prpmrtc" -> 0,
+      "/home/mcszw/prpmrtc/hblbht" -> 0, "/home/tgrplmn" -> 0)
+    println(Task7.sizes)
     Task7.sizes foreach { folder =>
-      assert(expected.exists(e => e._1 == folder))
-    }
-    expected foreach { folder =>
-      assert(Task7.sizes.exists(e => e._1 == folder))
+      assert(expected.exists(e => e._1 == folder._1))
     }
   }
 
   test("Verify log parsed correctly") {
-
   val fileStream = getClass.getResourceAsStream("/Day7_testData.txt")
+    Task7.sizes = scala.collection.mutable.Map("/home" -> 0)
     Task7.inputLines = Source.fromInputStream(fileStream).getLines.toList
     Task7.processLog()
 
-    val expected = scala.collection.mutable.Map("/home"->99, "/home/a"->19, "/home/a/e"->8,"/home/d"->50)
+    val expected = scala.collection.mutable.Map("/home"->106, "/home/a"->26, "/home/a/e"->8,"/home/d"->50)
     println(Task7.sizes)
 
-    Task7.sizes foreach {case (folder, size) =>{
+    Task7.sizes foreach {case (folder, size) =>
         assert(expected.exists(e=>e._1== folder && e._2==size))
-      }
   }}
+
+  test("canSeetheTreeFromOutside re") {
+    val fileStream = getClass.getResourceAsStream("/Day7_testData.txt")
+    Task7.sizes = scala.collection.mutable.Map("/home" -> 0)
+    Task7.inputLines = Source.fromInputStream(fileStream).getLines.toList
+    Task7.processLog()
+
+    val expected = scala.collection.mutable.Map("/home" -> 106, "/home/a" -> 26, "/home/a/e" -> 8, "/home/d" -> 50)
+    println(Task7.sizes)
+
+    Task7.sizes foreach { case (folder, size) =>
+      assert(expected.exists(e => e._1 == folder && e._2 == size))
+    }
+  }
+
+
 
 }

@@ -2,10 +2,17 @@ package adventOfCodeTests
 
 import org.scalatest.funsuite.AnyFunSuite
 import tasks.Task8
+import tasks.Task8.inputLines
+
 import scala.io.Source
 
 class Day8Tests extends AnyFunSuite {
-
+  Task8.sizes = Array(
+    Array(3, 0, 3, 7, 3),
+    Array(2, 5, 5, 1, 2),
+    Array(6, 5, 3, 3, 2),
+    Array(3, 3, 5, 4, 9),
+    Array(3, 5, 3, 9, 0))
   test("Parse input correctly") {
     val fileStream = getClass.getResourceAsStream("/Day8_testData.txt")
     Task8.inputLines = Source.fromInputStream(fileStream).getLines.toList
@@ -22,12 +29,7 @@ class Day8Tests extends AnyFunSuite {
     (3,1,3, false),(3,2,5, true),(3,3,4,false))
   input_checkIfTreeVisibleFromTopBottom foreach { i =>
     test(s"checkIfTreeVisibleFromTopBottom$i returns correct data") {
-      Task8.sizes = Array(
-        Array(3, 0, 3, 7, 3),
-        Array(2, 5, 5, 1, 2),
-        Array(6, 5, 3, 3, 2),
-        Array(3, 3, 5, 4, 9),
-        Array(3, 5, 3, 9, 0))
+
       val actual = Task8.treeVisibleInColumn(i._1, i._2, i._3)
       assert(actual == i._4)
     }
@@ -51,7 +53,7 @@ class Day8Tests extends AnyFunSuite {
   test("Calculate visible trees correctly") {
     val fileStream = getClass.getResourceAsStream("/Day8_testData.txt")
     Task8.inputLines = Source.fromInputStream(fileStream).getLines.toList
-    Task8.sizes = Array[Array[Int]]()
+    Task8.sizes = inputLines.map(_.split("").map(_.toInt)).toArray
     Task8.treesVisible = 0
     val expected = 21
     Task8.main()
@@ -59,4 +61,19 @@ class Day8Tests extends AnyFunSuite {
     assert(Task8.treesVisible == expected)
   }
 
+  val input_calcScenicScore = List(
+    //treeIndex, rowIndex, expectedScore
+    (2,3,6,"/Day8_testData.txt"),
+    (2,1,4,"/Day8_testData.txt"),
+    (1,1,7,"/Day8_input.txt"),
+    (2,1,48,"/Day8_input.txt")
+  )
+  input_calcScenicScore.foreach(i=>
+    test(s"Calculate scenic score correctly_${i}") {
+      val fileStream = getClass.getResourceAsStream(i._4)
+      Task8.inputLines = Source.fromInputStream(fileStream).getLines.toList
+      Task8.sizes = inputLines.map(_.split("").map(_.toInt)).toArray
+      assert(Task8.calcScenicScore(i._1, i._2) == i._3)
+    }
+  )
 }

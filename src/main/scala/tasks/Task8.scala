@@ -23,13 +23,11 @@ object Task8 extends App{
           case (treeHeight, treeIdx) =>
             if ( isEdgeTree(treeIdx,thisRowIdx) ||
               treeVisibleInRow(thisRow, treeHeight, treeIdx) || treeVisibleInColumn(thisRowIdx, treeIdx, treeHeight)){
-              //println(s"adding tree from row ${thisRow.mkString}, index $treeIdx, height $treeHeight")
               treesVisible += 1
             }
             calcScenicScore(treeIdx,thisRowIdx) match {
               case score if score > highestScenicScore =>
                 highestScenicScore = score
-                println(s"new score $score - $treeIdx, $thisRowIdx")
               case _ => None
             }
         }
@@ -77,15 +75,13 @@ object Task8 extends App{
     val rowWithIdx=thisRow
     val visibleFromLeft = rowWithIdx.take(treeIndex).forall { t => treeHeight > t }
     val visibleFromRight = rowWithIdx.takeRight(thisRow.length-treeIndex-1).forall{t => treeHeight > t}
-    //println(s"visible from left = ${visibleFromLeft}, visible from right = ${visibleFromRight}")
     visibleFromLeft || visibleFromRight
   }
 
   def treeVisibleInColumn(rowIndex:Int, elIndex:Int, treeHeight:Int): Boolean ={
     val sizesIndexed = sizes.zipWithIndex
     val visibleFromTop = sizesIndexed.take(rowIndex).map(s=>s._1(elIndex)).forall{h=>treeHeight > h}
-    val visibleFromBottom = sizesIndexed.takeRight(sizesIndexed.length-rowIndex-1).map(s=>s._1(elIndex)).forall{h=>treeHeight > h}
-    //println(s"visible from top = ${visibleFromTop}, visible from bottom = ${visibleFromBottom}")
+    val visibleFromBottom = sizesIndexed.takeRight(sizesIndexed.length-rowIndex-1).map(s=>s._1(elIndex)).forall{t=>treeHeight > t}
     visibleFromTop || visibleFromBottom
   }
 }
